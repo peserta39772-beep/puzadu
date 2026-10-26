@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PUZADU Touch - Puzzle Rumah Adat Nusantara</title>
+    <style>
+        /* ==================== STYLES & THEME ==================== */
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #16a34a;
+            --accent: #f59e0b;
+            --accent-hover: #d97706;
+            --bg-main: #f0f9ff;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-radius: 20px;
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 30px -10px rgba(2, 132, 199, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: radial-gradient(#bae6fd 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+
+        /* Top App Bar */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        h1.app-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .group-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Global Buttons */
+        .btn {
+            min-height: 56px;
+            padding: 0 24px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: #15803d; }
+
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-accent:hover { background: var(--accent-hover); }
+
+        .btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-outline:hover { background: #f0fdf4; }
+
+        .btn-icon {
+            width: 56px;
+            height: 56px;
+            padding: 0;
+            border-radius: 16px;
+        }
+
+        /* Main Container Views */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .view-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 960px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 32px;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease-out forwards;
+            border: 2px solid #e2e8f0;
+        }
+
+        .view-card.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Menu View */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-weight: 900;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .class-mode-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .class-mode-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+            height: 56px;
+            border-radius: 12px;
+            border: 2px solid #cbd5e1;
+            padding: 0 16px;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary);
+        }
+
+        /* House Selection View */
+        .section-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .house-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .house-card {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .house-card:hover, .house-card:focus {
+            border-color: var(--primary);
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .house-preview-img {
+            width: 100%;
+            height: 140px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #f1f5f9;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .house-card h4 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .house-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Game Layout (Puzzle View) */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 12px 20px;
+            border-radius: 16px;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .puzzle-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .puzzle-board {
+            position: relative;
+            width: 360px;
+            height: 360px;
+            background: #e2e8f0;
+            border: 4px solid var(--primary);
+            border-radius: 16px;
+            overflow: hidden;
+            touch-action: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        @media (min-width: 640px) {
+            .puzzle-board {
+                width: 420px;
+                height: 420px;
+            }
+        }
+
+        .puzzle-piece {
+            position: absolute;
+            background-repeat: no-repeat;
+            border: 1px solid rgba(255,255,255,0.7);
+            box-sizing: border-border-box;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            touch-action: none;
+        }
+
+        .puzzle-piece.selected {
+            border: 4px solid var(--accent);
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+            transform: scale(0.96);
+        }
+
+        .controls-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* Modals & Dialogs */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-body {
+            background: white;
+            border-radius: var(--border-radius);
+            max-width: 600px;
+            width: 100%;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.85); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        /* Info & Quiz View */
+        .info-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .info-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .reflection-box {
+            background: #fffbeeb0;
+            border: 2px dashed var(--accent);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .reflection-box h4 {
+            color: #b45309;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Quiz Options */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .quiz-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #cbd5e1;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        .option-btn.correct {
+            border-color: var(--secondary);
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .option-btn.wrong {
+            border-color: #ef4444;
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .feedback-box {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 300;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Header / Top Bar -->
+    <header>
+        <div class="logo-group">
+            <div class="logo-icon">🧩</div>
+            <h1 class="app-title">PUZADU Touch</h1>
+        </div>
+        <div class="header-actions">
+            <div class="group-badge" id="group-display">
+                <span>👥</span> <span id="current-group-label">Kelompok 1</span> | Skor: <span id="current-score-label">0</span>
+            </div>
+            <button class="btn btn-outline btn-icon" id="fullscreen-btn" title="Mode Layar Penuh">
+                📺
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main>
+
+        <!-- VIEW 1: MAIN MENU -->
+        <section id="view-menu" class="view-card active">
+            <div class="hero-section">
+                <h2 class="hero-title">PUZADU Touch</h2>
+                <p class="hero-subtitle">Petualangan Mengenal Rumah Adat Nusantara</p>
+            </div>
+
+            <!-- Management Mode Kelas -->
+            <div class="class-mode-box">
+                <h3>👥 Mode Pembelajaran Kelas</h3>
+                <div class="input-group">
+                    <input type="text" id="group-name-input" class="input-field" placeholder="Masukkan Nama Kelompok (mis: Kelompok Garudaku)" value="Kelompok 1">
+                    <button class="btn btn-secondary" id="set-group-btn">Set Kelompok</button>
+                </div>
+            </div>
+
+            <div class="menu-grid">
+                <button class="btn btn-primary" id="start-game-btn" style="grid-column: span 2; font-size: 1.3rem;">
+                    ▶️ Mulai Bermain
+                </button>
+                <button class="btn btn-outline" id="guide-btn">
+                    📖 Petunjuk Game
+                </button>
+                <button class="btn btn-outline" id="about-btn">
+                    ℹ️ Tentang Game
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 2: HOUSE SELECTION -->
+        <section id="view-select" class="view-card">
+            <div class="section-header">
+                <h2>Pilih Rumah Adat Nusantara</h2>
+                <p>Sentuh salah satu rumah adat untuk mulai menyusun puzzle!</p>
+            </div>
+
+            <div class="house-grid" id="house-list">
+                <!-- House Cards Generated Dynamically -->
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <button class="btn btn-outline" onclick="showView('view-menu')">⬅️ Kembali ke Menu</button>
+                
+                <!-- Custom Local Image Uploader Fallback -->
+                <label class="btn btn-outline" style="cursor: pointer; font-size: 0.9rem;">
+                    📁 Ganti Gambar Lokal
+                    <input type="file" id="custom-image-input" accept="image/*" style="display: none;">
+                </label>
+            </div>
+        </section>
+
+        <!-- VIEW 3: PUZZLE GAME -->
+        <section id="view-puzzle" class="view-card">
+            <div class="game-header">
+                <div class="game-stats">
+                    <span>🏠 <strong id="puzzle-house-title">Rumah Adat</strong></span>
+                    <span>⏱️ <strong id="timer-label">00:00</strong></span>
+                    <span>🔄 Langkah: <strong id="steps-label">0</strong></span>
+                </div>
+                <div>
+                    <span style="font-weight: 600; margin-right: 8px;">Tingkat Kesulitan:</span>
+                    <button class="btn btn-outline" id="diff-2x2" style="min-height: 40px; padding: 0 12px;">2 x 2</button>
+                    <button class="btn btn-outline" id="diff-3x3" style="min-height: 40px; padding: 0 12px;">3 x 3</button>
+                </div>
+            </div>
+
+            <div class="puzzle-container">
+                <div class="puzzle-board" id="puzzle-board">
+                    <!-- Puzzle Pieces Injected Here -->
+                </div>
+            </div>
+
+            <div class="controls-bar">
+                <button class="btn btn-accent" id="hint-btn">💡 Intip Petunjuk</button>
+                <button class="btn btn-outline" id="reset-puzzle-btn">🔄 Ulangi</button>
+                <button class="btn btn-outline" onclick="showView('view-select')">🏛️ Ganti Rumah</button>
+            </div>
+        </section>
+
+        <!-- VIEW 4: HOUSE INFO & REFLECTION -->
+        <section id="view-info" class="view-card">
+            <div class="section-header">
+                <h2 id="info-house-name">Rumah Gadang</h2>
+                <p id="info-house-origin" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">Sumatera Barat</p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div id="info-house-image-container" style="width: 100%; max-width: 400px; height: 220px; margin: 0 auto; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md);"></div>
+            </div>
+
+            <div class="info-card">
+                <h3>✨ Ciri Khas Budaya</h3>
+                <p id="info-house-desc" style="font-size: 1.1rem; line-height: 1.6;">Deskripsi rumah adat...</p>
+            </div>
+
+            <div class="reflection-box">
+                <h4>💬 Pertanyaan Diskusi Kelas (Refleksi)</h4>
+                <p id="info-house-reflection" style="font-size: 1.15rem; font-weight: 600; color: #78350f;">Pertanyaan refleksi...</p>
+            </div>
+
+            <button class="btn btn-primary" id="start-quiz-btn" style="width: 100%; font-size: 1.2rem;">
+                📝 Lanjut ke Kuis Interaktif
+            </button>
+        </section>
+
+        <!-- VIEW 5: KUIS INTERAKTIF -->
+        <section id="view-quiz" class="view-card">
+            <div class="game-header">
+                <span style="font-weight: 700; font-size: 1.1rem;">Kuis Pertanyaan <span id="quiz-num">1</span> dari 5</span>
+                <span style="font-weight: 700; font-size: 1.1rem; color: var(--secondary);">Skor Kuis: <span id="quiz-score-val">0</span></span>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question" id="quiz-question-text">Pertanyaan kuis akan muncul di sini?</div>
+                <div class="quiz-options" id="quiz-options-container">
+                    <!-- Option Buttons Injected Dynamically -->
+                </div>
+                <div class="feedback-box" id="quiz-feedback"></div>
+            </div>
+
+            <div style="margin-top: 24px; text-align: right;">
+                <button class="btn btn-primary" id="next-quiz-btn" style="display: none;">Lanjut Pertanyaan ➡️</button>
+            </div>
+        </section>
+
+        <!-- VIEW 6: SUMMARY & GROUP ROTATION -->
+        <section id="view-summary" class="view-card" style="text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 12px;">🏆</div>
+            <h2 style="font-size: 2.2rem; color: var(--primary-dark); margin-bottom: 8px;">Hebat Sekali!</h2>
+            <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 24px;">Kelompok Anda telah menyelesaikan seluruh tantangan!</p>
+
+            <div style="background: #f0fdf4; border: 2px dashed var(--secondary); padding: 24px; border-radius: 20px; margin-bottom: 28px;">
+                <h3 style="color: var(--secondary); font-size: 1.4rem; margin-bottom: 8px;" id="summary-group-name">Kelompok 1</h3>
+                <p style="font-size: 1.8rem; font-weight: 800; color: var(--text-main);">Total Skor: <span id="summary-total-score">100</span> Poin</p>
+            </div>
+
+            <div class="menu-grid">
+                <button class="btn btn-secondary" id="next-group-btn" style="grid-column: span 2; font-size: 1.2rem;">
+                    👥 Giliran Kelompok Berikutnya
+                </button>
+                <button class="btn btn-outline" onclick="showView('view-select')">🏛️ Pilih Rumah Lain</button>
+                <button class="btn btn-outline" onclick="showView('view-menu')">🏠 Main dari Awal</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: PETUNJUK & TENTANG -->
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal-body">
+            <h3 class="modal-title" id="modal-title-text">Judul Modal</h3>
+            <div id="modal-content-text" style="font-size: 1.05rem; line-height: 1.6; color: var(--text-main); margin-bottom: 24px;">
+                Isi Modal...
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="closeModal()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- MODAL: HINT PREVIEW -->
+    <div class="modal-overlay" id="hint-modal">
+        <div class="modal-body" style="text-align: center;">
+            <h3 class="modal-title">Gambar Rumah Adat Utuh</h3>
+            <div id="hint-image-container" style="width: 100%; height: 260px; margin-bottom: 20px; border-radius: 16px; overflow: hidden;"></div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('hint-modal').classList.remove('active')">Tutup & Lanjutkan</button>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        /* ==================== 1. DATA RUMAH ADAT & SVG GENERATOR ==================== */
+        
+        // Helper function to create SVG Data URLs for standalone graphics
+        function createHouseSVG(type) {
+            let svgContent = '';
+            if (type === 'gadang') {
+                svgContent = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+                    <rect width="400" height="300" fill="#e0f2fe"/>
+                    <path d="M0,230 Q200,280 400,230 L400,300 L0,300 Z" fill="#15803d"/>
+                    <!-- Rumah Gadang Roof -->
+                    <path d="M 40,160 Q 100,50 140,120 Q 200,40 260,120 Q 300,50 360,160 Q 200,130 40,160 Z" fill="#991b1b"/>
+                    <path d="M 20,150 Q 100,30 140,110 Q 200,20 260,110 Q 300,30 380,150 Q 200,120 20,150 Z" fill="#b91c1c"/>
+                    <!-- House Body -->
+                    <polygon points="70,160 330,160 310,240 90,240" fill="#d97706" stroke="#78350f" stroke-width="4"/>
+                    <!-- Ukiran & Windows -->
+                    <rect x="110" y="180" width="30" height="40" fill="#451a03" rx="4"/>
+                    <rect x="160" y="180" width="30" height="40" fill="#451a03" rx="4"/>
+                    <rect x="210" y="180" width="30" height="40" fill="#451a03" rx="4"/>
+                    <rect x="260" y="180" width="30" height="40" fill="#451a03" rx="4"/>
+                    <!-- Pillars -->
+                    <rect x="95" y="240" width="10" height="30" fill="#78350f"/>
+                    <rect x="165" y="240" width="10" height="30" fill="#78350f"/>
+                    <rect x="225" y="240" width="10" height="30" fill="#78350f"/>
+                    <rect x="295" y="240" width="10" height="30" fill="#78350f"/>
+                </svg>`;
+            } else if (type === 'joglo') {
+                svgContent = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+                    <rect width="400" height="300" fill="#fef3c7"/>
+                    <path d="M0,240 L400,240 L400,300 L0,300 Z" fill="#166534"/>
+                    <!-- Joglo Roof Structure -->
+                    <polygon points="130,60 270,60 310,130 90,130" fill="#78350f"/>
+                    <polygon points="90,130 310,130 370,180 30,180" fill="#92400e"/>
+                    <!-- Pendopo Pillars (Soko Guru) -->
+                    <rect x="70" y="180" width="16" height="70" fill="#451a03"/>
+                    <rect x="140" y="180" width="16" height="70" fill="#451a03"/>
+                    <rect x="244" y="180" width="16" height="70" fill="#451a03"/>
+                    <rect x="314" y="180" width="16" height="70" fill="#451a03"/>
+                    <!-- Inner Door -->
+                    <rect x="175" y="190" width="50" height="60" fill="#78350f"/>
+                </svg>`;
+            } else if (type === 'tongkonan') {
+                svgContent = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+                    <rect width="400" height="300" fill="#ecfdf5"/>
+                    <path d="M0,240 L400,240 L400,300 L0,300 Z" fill="#15803d"/>
+                    <!-- Curved Roof (Saddle shape) -->
+                    <path d="M 20,60 Q 200,160 380,60 L 320,150 L 80,150 Z" fill="#991b1b"/>
+                    <path d="M 10,45 Q 200,150 390,45 L 370,65 Q 200,165 30,65 Z" fill="#b91c1c"/>
+                    <!-- Body Structure -->
+                    <rect x="100" y="150" width="200" height="90" fill="#d97706" stroke="#451a03" stroke-width="3"/>
+                    <!-- Horn details on front pillar -->
+                    <line x1="200" y1="110" x2="200" y2="240" stroke="#451a03" stroke-width="8"/>
+                    <circle cx="200" cy="130" r="6" fill="#f59e0b"/>
+                    <circle cx="200" cy="150" r="6" fill="#f59e0b"/>
+                    <circle cx="200" cy="170" r="6" fill="#f59e0b"/>
+                </svg>`;
+            } else if (type === 'honai') {
+                svgContent = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+                    <rect width="400" height="300" fill="#e0f2fe"/>
+                    <!-- Mountain background -->
+                    <polygon points="-20,250 120,100 260,250" fill="#94a3b8"/>
+                    <polygon points="140,250 280,80 420,250" fill="#64748b"/>
+                    <path d="M0,230 L400,230 L400,300 L0,300 Z" fill="#166534"/>
+                    <!-- Dome Straw Roof -->
+                    <path d="M 110,180 Q 200,40 290,180 Z" fill="#b45309"/>
+                    <path d="M 120,180 Q 200,60 280,180 Z" fill="#d97706"/>
+                    <!-- Wooden Base Body -->
+                    <rect x="130" y="180" width="140" height="60" fill="#78350f" rx="8"/>
+                    <!-- Small Door -->
+                    <path d="M 180,240 L 180,205 Q 200,195 220,205 L 220,240 Z" fill="#1e1b4b"/>
+                </svg>`;
+            }
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svgContent);
+        }
+
+        const HOUSES_DATA = [
+            {
+                id: 'gadang',
+                name: 'Rumah Gadang',
+                origin: 'Sumatera Barat',
+                image: createHouseSVG('gadang'),
+                desc: 'Rumah Gadang memiliki atap yang sangat khas berbentuk meruncing ke atas seperti tanduk kerbau, yang disebut Bagonjong. Dindingnya dihiasi ukiran warna-warni yang indah.',
+                reflection: 'Mengapa atap Rumah Gadang dibuat meruncing menyerupai tanduk kerbau?',
+                quiz: [
+                    { q: 'Dari provinsi manakah Rumah Gadang berasal?', options: ['Sumatera Utara', 'Sumatera Barat', 'Riau', 'Aceh'], answer: 1, explain: 'Rumah Gadang adalah rumah tradisional masyarakat Minangkabau di Sumatera Barat.' },
+                    { q: 'Bentuk atap Rumah Gadang menyerupai...', options: ['Tanduk Kerbau', 'Sayap Burung', 'Perahu', 'Gunung'], answer: 0, explain: 'Atap meruncing tersebut dinamakan Bagonjong yang menyerupai tanduk kerbau.' },
+                    { q: 'Bahan utama pembuatan struktur dinding Rumah Gadang adalah...', options: ['Semen', 'Besi', 'Kayu dan Bambu', 'Kaca'], answer: 2, explain: 'Rumah tradisional memanfaatkan bahan alam seperti kayu, bambu, dan serat ijuk.' },
+                    { q: 'Fungsi ukiran pada dinding Rumah Gadang adalah...', options: ['Menakuti hewan', 'Hiasan & simbol keindahan alam', 'Tempat bersembunyi', 'Penahan angin'], answer: 1, explain: 'Ukiran rumah adat mencerminkan keindahan dan filosofi alam Minangkabau.' },
+                    { q: 'Keberagaman rumah adat mengajarkan kita untuk...', options: ['Saling mengejek', 'Menghargai budaya Nusantara', 'Memilih satu yang paling baik', 'Lupa tradisi'], answer: 1, explain: 'Setiap budaya unik dan harus kita hargai bersama.' }
+                ]
+            },
+            {
+                id: 'joglo',
+                name: 'Rumah Joglo',
+                origin: 'Jawa Tengah',
+                image: createHouseSVG('joglo'),
+                desc: 'Rumah Joglo memiliki bagian depan terbuka yang luas bernama Pendopo. Atap pertengahannya menjulang tinggi yang disangga oleh empat tiang utama (Soko Guru).',
+                reflection: 'Menurut kalian, mengapa bagian Pendopo depan Rumah Joglo dibuat terbuka tanpa dinding?',
+                quiz: [
+                    { q: 'Rumah Joglo merupakan rumah adat khas dari daerah...', options: ['Jawa Tengah', 'Bali', 'Papua', 'Sulawesi Utara'], answer: 0, explain: 'Rumah Joglo banyak ditemukan di Jawa Tengah dan Yogyakarta.' },
+                    { q: 'Bagian depan Rumah Joglo yang terbuka untuk menyambut tamu disebut...', options: ['Kamar', 'Pendopo', 'Dapur', 'Balkon'], answer: 1, explain: 'Pendopo berfungsi sebagai ruang penerima tamu dan kegiatan kemasyarakatan.' },
+                    { q: 'Empat tiang utama penyangga Rumah Joglo dinamakan...', options: ['Tiang Listrik', 'Soko Guru', 'Pilar Utama', 'Bambu Pasak'], answer: 1, explain: 'Soko Guru adalah 4 tiang kayu utama penyangga atap tajug Joglo.' },
+                    { q: 'Atap Rumah Joglo umumnya terbuat dari...', options: ['Genteng Tanah Liat', 'Seng', 'Plastik', 'Kain'], answer: 0, explain: 'Genteng tanah liat memberikan kesejukan di dalam rumah.' },
+                    { q: 'Sikap kita melihat rumah adat dari suku lain adalah...', options: ['Menghormati dan mengagumi', 'Abaikan saja', 'Biasa saja', 'Menolaknya'], answer: 0, explain: 'Kita harus bangga dan menghormati kekayaan budaya Indonesia.' }
+                ]
+            },
+            {
+                id: 'tongkonan',
+                name: 'Rumah Tongkonan',
+                origin: 'Sulawesi Selatan (Masyarakat Toraja)',
+                image: createHouseSVG('tongkonan'),
+                desc: 'Rumah Tongkonan memiliki atap melengkung menyerupai bentuk perahu atau tanduk. Bagian depan rumah sering dihiasi dengan susunan tanduk kerbau.',
+                reflection: 'Apa yang membuat bentuk rumah Tongkonan ini unik dibanding rumah modern saat ini?',
+                quiz: [
+                    { q: 'Rumah Tongkonan dibangun oleh masyarakat suku...', options: ['Batak', 'Toraja', 'Dayak', 'Asmat'], answer: 1, explain: 'Rumah Tongkonan adalah rumah adat suku Toraja di Sulawesi Selatan.' },
+                    { q: 'Atap Rumah Tongkonan memiliki bentuk unik menyerupai...', options: ['Perahu Melengkung', 'Lingkaran', 'Kotak', 'Segitiga Datar'], answer: 0, explain: 'Bentuknya melengkung indah bagaikan perahu zaman dahulu.' },
+                    { q: 'Hiasan yang sering dipasang di tiang depan Rumah Tongkonan adalah...', options: ['Tanduk Kerbau', 'Kerang Laut', 'Batu Mulia', 'Bunga Lili'], answer: 0, explain: 'Tanduk kerbau melambangkan tingkatan sosial dan rasa syukur masyarakat Toraja.' },
+                    { q: 'Rumah Tongkonan berada di provinsi...', options: ['Sulawesi Selatan', 'Sulawesi Utara', 'Gorontalo', 'Bali'], answer: 0, explain: 'Masyarakat Toraja bermukim di pegunungan Sulawesi Selatan.' },
+                    { q: 'Mengapa rumah tradisional Indonesia berbeda-beda bentuknya?', options: ['Karena menyesuaikan alam & budaya setempat', 'Karena salah buat', 'Karena ikut-ikutan', 'Tidak ada alasan'], answer: 0, explain: 'Nenek moyang merancang rumah sesuai kondisi alam dan filosofi lokal.' }
+                ]
+            },
+            {
+                id: 'honai',
+                name: 'Rumah Honai',
+                origin: 'Papua (Pegunungan)',
+                image: createHouseSVG('honai'),
+                desc: 'Rumah Honai berbentuk bulat dengan atap jerami atau ilalang berbentuk kubah. Bentuk bulat tanpa jendela dirancang agar bagian dalam tetap hangat dari udara dingin pegunungan.',
+                reflection: 'Mengapa Rumah Honai dibuat berbentuk bulat dan tidak memiliki jendela?',
+                quiz: [
+                    { q: 'Rumah Honai adalah rumah tradisional masyarakat di wilayah...', options: ['Pegunungan Papua', 'Pesisir Pantai', 'Hutan Kalimantan', 'Pulau Jawa'], answer: 0, explain: 'Rumah Honai khas suku di wilayah pegunungan Papua.' },
+                    { q: 'Atap Rumah Honai terbuat dari...', options: ['Jerami / Ilalang', 'Genteng', 'Seng Aluminium', 'Kaca'], answer: 0, explain: 'Jerami dan ilalang membantu menahan hawa dingin udara pegunungan.' },
+                    { q: 'Bentuk bangunan Rumah Honai adalah...', options: ['Bulat seperti Jamur', 'Kotak Tinggi', 'Segitiga', 'Lonjong'], answer: 0, explain: 'Bentuk bundar tanpa jendela menjaga kehangatan dalam ruangan.' },
+                    { q: 'Fungsi utama desain Rumah Honai yang mungil adalah...', options: ['Menahan hawa dingin pegunungan', 'Agar muat sedikit barang', 'Tempat bermain', 'Hiasan desa'], answer: 0, explain: 'Desain ini sangat efektif memerangkap panas di daerah dingin.' },
+                    { q: 'Kekayaan rumah adat dari Barat sampai Timur Indonesia membuktikan motto...', options: ['Bhinneka Tunggal Ika', 'Bersatu Kita Teguh', 'Tut Wuri Handayani', 'Sumpah Pemuda'], answer: 0, explain: 'Berbeda-beda tetapi tetap satu jua!' }
+                ]
+            }
+        ];
+
+        /* ==================== 2. SOUND EFFECTS (Web Audio API) ==================== */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            playTap() {
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.08);
+            }
+
+            playSuccess() {
+                this.init();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.1);
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + idx * 0.1 + 0.25);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(this.ctx.currentTime + idx * 0.1);
+                    osc.stop(this.ctx.currentTime + idx * 0.1 + 0.25);
+                });
+            }
+
+            playWrong() {
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+                osc.frequency.setValueAtTime(150, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.25);
+            }
+        }
+
+        const audio = new SoundFX();
+
+        /* ==================== 3. STATE APP & GAME CONTROL ==================== */
+        let state = {
+            groupName: 'Kelompok 1',
+            score: 0,
+            selectedHouse: HOUSES_DATA[0],
+            gridSize: 2, // 2x2 or 3x3
+            puzzlePieces: [], // Array of piece objects
+            selectedPieceIdx: null,
+            steps: 0,
+            timer: 0,
+            timerInterval: null,
+            quizIndex: 0,
+            quizScore: 0
+        };
+
+        // Navigation Controller
+        function showView(viewId) {
+            audio.playTap();
+            document.querySelectorAll('.view-card').forEach(card => card.classList.remove('active'));
+            const target = document.getElementById(viewId);
+            if (target) target.classList.add('active');
+
+            if (viewId === 'view-select') renderHouseSelection();
+        }
+
+        function closeModal() {
+            audio.playTap();
+            document.getElementById('info-modal').classList.remove('active');
+        }
+
+        function openModal(title, htmlContent) {
+            document.getElementById('modal-title-text').innerText = title;
+            document.getElementById('modal-content-text').innerHTML = htmlContent;
+            document.getElementById('info-modal').classList.add('active');
+        }
+
+        /* ==================== 4. HOUSE SELECTION RENDER ==================== */
+        function renderHouseSelection() {
+            const container = document.getElementById('house-list');
+            container.innerHTML = '';
+
+            HOUSES_DATA.forEach(house => {
+                const card = document.createElement('div');
+                card.className = 'house-card';
+                card.innerHTML = `
+                    <div class="house-preview-img">
+                        <img src="${house.image}" alt="${house.name}" style="width:100%; height:100%; object-fit:cover; border-radius:12px;">
+                    </div>
+                    <h4>${house.name}</h4>
+                    <p>📍 ${house.origin}</p>
+                `;
+                card.onclick = () => selectHouse(house);
+                container.appendChild(card);
+            });
+        }
+
+        function selectHouse(house) {
+            state.selectedHouse = house;
+            document.getElementById('puzzle-house-title').innerText = house.name;
+            showView('view-puzzle');
+            initPuzzle();
+        }
+
+        // Custom image uploader functionality
+        document.getElementById('custom-image-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const customHouse = {
+                        id: 'custom',
+                        name: 'Rumah Adat Pilihan',
+                        origin: 'Dokumen Lokal',
+                        image: evt.target.result,
+                        desc: 'Gambar rumah adat yang diunggah dari perangkat lokal.',
+                        reflection: 'Amati bagian-bagian unik dari rumah adat yang kamu unggah ini!',
+                        quiz: HOUSES_DATA[0].quiz // Fallback quiz
+                    };
+                    selectHouse(customHouse);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        /* ==================== 5. PUZZLE ENGINE (Pointer Events) ==================== */
+        function initPuzzle() {
+            clearInterval(state.timerInterval);
+            state.steps = 0;
+            state.timer = 0;
+            state.selectedPieceIdx = null;
+            document.getElementById('steps-label').innerText = '0';
+            document.getElementById('timer-label').innerText = '00:00';
+
+            // Start Timer
+            state.timerInterval = setInterval(() => {
+                state.timer++;
+                const mins = String(Math.floor(state.timer / 60)).padStart(2, '0');
+                const secs = String(state.timer % 60).padStart(2, '0');
+                document.getElementById('timer-label').innerText = `${mins}:${secs}`;
+            }, 1000);
+
+            buildPuzzleGrid();
+        }
+
+        function buildPuzzleGrid() {
+            const board = document.getElementById('puzzle-board');
+            board.innerHTML = '';
+            
+            const N = state.gridSize;
+            const totalPieces = N * N;
+            
+            // Generate solved positions array [0, 1, ..., N*N-1]
+            let positions = Array.from({length: totalPieces}, (_, i) => i);
+            
+            // Shuffle positions (Ensure solvable state)
+            do {
+                positions.sort(() => Math.random() - 0.5);
+            } while (isAlreadySolved(positions));
+
+            state.puzzlePieces = positions;
+
+            const boardSize = board.clientWidth || 360;
+            const pieceSize = boardSize / N;
+
+            positions.forEach((correctPos, currentGridIdx) => {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.dataset.currentIdx = currentGridIdx;
+
+                // Size & Position in grid
+                piece.style.width = `${pieceSize}px`;
+                piece.style.height = `${pieceSize}px`;
+                
+                const row = Math.floor(currentGridIdx / N);
+                const col = currentGridIdx % N;
+                piece.style.top = `${row * pieceSize}px`;
+                piece.style.left = `${col * pieceSize}px`;
+
+                // Set Background Slice
+                piece.style.backgroundImage = `url('${state.selectedHouse.image}')`;
+                piece.style.backgroundSize = `${boardSize}px ${boardSize}px`;
+
+                const correctRow = Math.floor(correctPos / N);
+                const correctCol = correctPos % N;
+                piece.style.backgroundPosition = `-${correctCol * pieceSize}px -${correctRow * pieceSize}px`;
+
+                // Pointer Events Interaction (Touch/Mouse)
+                piece.addEventListener('pointerdown', (e) => handlePieceTap(currentGridIdx, piece));
+
+                board.appendChild(piece);
+            });
+        }
+
+        function isAlreadySolved(arr) {
+            return arr.every((val, idx) => val === idx);
+        }
+
+        function handlePieceTap(clickedGridIdx, pieceEl) {
+            audio.playTap();
+
+            // First Selection
+            if (state.selectedPieceIdx === null) {
+                state.selectedPieceIdx = clickedGridIdx;
+                highlightPieces();
+            } 
+            // Swap Action
+            else if (state.selectedPieceIdx !== clickedGridIdx) {
+                swapPieces(state.selectedPieceIdx, clickedGridIdx);
+                state.selectedPieceIdx = null;
+                highlightPieces();
+                
+                state.steps++;
+                document.getElementById('steps-label').innerText = state.steps;
+
+                checkPuzzleCompletion();
+            } 
+            // Deselect
+            else {
+                state.selectedPieceIdx = null;
+                highlightPieces();
+            }
+        }
+
+        function highlightPieces() {
+            const pieces = document.querySelectorAll('.puzzle-piece');
+            pieces.forEach((p) => {
+                const idx = parseInt(p.dataset.currentIdx);
+                if (idx === state.selectedPieceIdx) {
+                    p.classList.add('selected');
+                } else {
+                    p.classList.remove('selected');
+                }
+            });
+        }
+
+        function swapPieces(idxA, idxB) {
+            // Swap data array
+            const temp = state.puzzlePieces[idxA];
+            state.puzzlePieces[idxA] = state.puzzlePieces[idxB];
+            state.puzzlePieces[idxB] = temp;
+
+            // Re-render Board
+            const N = state.gridSize;
+            const board = document.getElementById('puzzle-board');
+            const boardSize = board.clientWidth || 360;
+            const pieceSize = boardSize / N;
+
+            const pieces = document.querySelectorAll('.puzzle-piece');
+            pieces.forEach(piece => {
+                const curIdx = parseInt(piece.dataset.currentIdx);
+                const actualDataVal = state.puzzlePieces[curIdx];
+
+                const correctRow = Math.floor(actualDataVal / N);
+                const correctCol = actualDataVal % N;
+                piece.style.backgroundPosition = `-${correctCol * pieceSize}px -${correctRow * pieceSize}px`;
+            });
+        }
+
+        function checkPuzzleCompletion() {
+            if (isAlreadySolved(state.puzzlePieces)) {
+                clearInterval(state.timerInterval);
+                audio.playSuccess();
+                triggerConfetti();
+
+                // Add score
+                const baseScore = state.gridSize === 2 ? 50 : 80;
+                state.score += baseScore;
+                updateGroupBadge();
+
+                setTimeout(() => {
+                    openInfoView();
+                }, 1000);
+            }
+        }
+
+        /* ==================== 6. INFO & REFLECTION VIEW ==================== */
+        function openInfoView() {
+            const house = state.selectedHouse;
+            document.getElementById('info-house-name').innerText = house.name;
+            document.getElementById('info-house-origin').innerText = '📍 ' + house.origin;
+            document.getElementById('info-house-desc').innerText = house.desc;
+            document.getElementById('info-house-reflection').innerText = house.reflection;
+
+            const imgContainer = document.getElementById('info-house-image-container');
+            imgContainer.innerHTML = `<img src="${house.image}" style="width:100%; height:100%; object-fit:cover;">`;
+
+            showView('view-info');
+        }
+
+        /* ==================== 7. KUIS ENGINE ==================== */
+        function startQuiz() {
+            state.quizIndex = 0;
+            state.quizScore = 0;
+            document.getElementById('quiz-score-val').innerText = '0';
+            renderQuizQuestion();
+            showView('view-quiz');
+        }
+
+        function renderQuizQuestion() {
+            const quizList = state.selectedHouse.quiz;
+            const qData = quizList[state.quizIndex];
+
+            document.getElementById('quiz-num').innerText = state.quizIndex + 1;
+            document.getElementById('quiz-question-text').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.className = 'feedback-box';
+            feedback.style.display = 'none';
+
+            document.getElementById('next-quiz-btn').style.display = 'none';
+
+            qData.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span>${String.fromCharCode(65 + optIdx)}. ${optText}</span>`;
+                btn.onclick = () => handleAnswer(optIdx, qData.answer, qData.explain, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedIdx, correctIdx, explanation, btnEl) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.style.pointerEvents = 'none'); // Disable further clicks
+
+            const feedback = document.getElementById('quiz-feedback');
+
+            if (selectedIdx === correctIdx) {
+                audio.playSuccess();
+                btnEl.classList.add('correct');
+                btnEl.innerHTML += ' <span>✅</span>';
+                feedback.className = 'feedback-box show';
+                feedback.style.background = '#f0fdf4';
+                feedback.style.color = '#166534';
+                feedback.innerHTML = `<strong>Benar sekali! 🎉</strong><br>${explanation}`;
+                
+                state.quizScore += 10;
+                document.getElementById('quiz-score-val').innerText = state.quizScore;
+            } else {
+                audio.playWrong();
+                btnEl.classList.add('wrong');
+                btnEl.innerHTML += ' <span>❌</span>';
+                
+                // Show correct option
+                allBtns[correctIdx].classList.add('correct');
+
+                feedback.className = 'feedback-box show';
+                feedback.style.background = '#fef2f2';
+                feedback.style.color = '#991b1b';
+                feedback.innerHTML = `<strong>Hampir tepat!</strong><br>${explanation}`;
+            }
+
+            document.getElementById('next-quiz-btn').style.display = 'inline-flex';
+        }
+
+        document.getElementById('next-quiz-btn').onclick = () => {
+            audio.playTap();
+            state.quizIndex++;
+            const quizList = state.selectedHouse.quiz;
+
+            if (state.quizIndex < quizList.length) {
+                renderQuizQuestion();
+            } else {
+                // Finish Quiz
+                state.score += state.quizScore;
+                updateGroupBadge();
+                renderSummaryView();
+            }
+        };
+
+        function renderSummaryView() {
+            document.getElementById('summary-group-name').innerText = state.groupName;
+            document.getElementById('summary-total-score').innerText = state.score;
+            triggerConfetti();
+            showView('view-summary');
+        }
+
+        /* ==================== 8. CLASSROOM & GROUP MANAGEMENT ==================== */
+        function updateGroupBadge() {
+            document.getElementById('current-group-label').innerText = state.groupName;
+            document.getElementById('current-score-label').innerText = state.score;
+        }
+
+        document.getElementById('set-group-btn').onclick = () => {
+            const val = document.getElementById('group-name-input').value.trim();
+            if (val) {
+                state.groupName = val;
+                updateGroupBadge();
+                audio.playTap();
+                alert(`Nama Kelompok berhasil diatur: ${state.groupName}`);
+            }
+        };
+
+        document.getElementById('next-group-btn').onclick = () => {
+            state.score = 0;
+            state.groupName = `Kelompok ${parseInt(state.groupName.replace(/\D/g, '') || 1) + 1}`;
+            document.getElementById('group-name-input').value = state.groupName;
+            updateGroupBadge();
+            showView('view-menu');
+        };
+
+        /* ==================== 9. CONFETTI ANIMATION ==================== */
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#0284c7', '#16a34a', '#f59e0b', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 10 + 5,
+                    speedY: Math.random() * 5 + 3,
+                    speedX: Math.random() * 2 - 1
+                });
+            }
+
+            let animationFrame;
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+
+                if (particles.some(p => p.y < canvas.height)) {
+                    animationFrame = requestAnimationFrame(render);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    cancelAnimationFrame(animationFrame);
+                }
+            }
+            render();
+        }
+
+        /* ==================== 10. EVENT LISTENERS & INITIALIZATION ==================== */
+        window.onload = () => {
+            // Main menu buttons
+            document.getElementById('start-game-btn').onclick = () => showView('view-select');
+            
+            document.getElementById('guide-btn').onclick = () => {
+                openModal('📖 Petunjuk Permainan', `
+                    <ol style="padding-left: 20px; line-height: 1.8;">
+                        <li><strong>Pilih Rumah Adat:</strong> Sentuh gambar rumah adat yang ingin dipelajari.</li>
+                        <li><strong>Susun Puzzle:</strong> Sentuh kepingan puzzle pertama, lalu sentuh kepingan kedua untuk menukar posisinya sampai utuh.</li>
+                        <li><strong>Refleksi Kelas:</strong> Diskusi bersama guru mengenai ciri khas rumah adat tersebut.</li>
+                        <li><strong>Kuis Interaktif:</strong> Jawab 5 pertanyaan kuis dengan menyentuh pilihan jawaban di layar smartboard.</li>
+                        <li><strong>Bergantian Kelompok:</strong> Setelah selesai, catat skor kelompok dan beri kesempatan kepada kelompok berikutnya!</li>
+                    </ol>
+                `);
+            };
+
+            document.getElementById('about-btn').onclick = () => {
+                openModal('ℹ️ Tentang PUZADU Touch', `
+                    <p style="margin-bottom: 12px;"><strong>PUZADU Touch</strong> adalah media inovasi pembelajaran interaktif berbasis web untuk siswa Kelas III SD.</p>
+                    <p style="margin-bottom: 12px;">Dikembangkan untuk mendukung kegiatan <strong>Seminar PPG Prajabatan PGSD</strong> dalam mengenalkan keragaman budaya Nusantara secara menyenangkan dan kolaboratif.</p>
+                    <p><em>Fitur Utama: Smartboard Touch Compatible, Sound Effects, Vector Graphics, Standalone Offline Web Application.</em></p>
+                `);
+            };
+
+            // Fullscreen API toggle
+            document.getElementById('fullscreen-btn').onclick = () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => alert("Layar penuh tidak didukung oleh browser ini."));
+                } else {
+                    document.exitFullscreen();
+                }
+            };
+
+            // Difficulty Toggles
+            document.getElementById('diff-2x2').onclick = () => {
+                state.gridSize = 2;
+                audio.playTap();
+                initPuzzle();
+            };
+            document.getElementById('diff-3x3').onclick = () => {
+                state.gridSize = 3;
+                audio.playTap();
+                initPuzzle();
+            };
+
+            // Puzzle Control Buttons
+            document.getElementById('reset-puzzle-btn').onclick = () => {
+                audio.playTap();
+                initPuzzle();
+            };
+
+            document.getElementById('hint-btn').onclick = () => {
+                audio.playTap();
+                const container = document.getElementById('hint-image-container');
+                container.innerHTML = `<img src="${state.selectedHouse.image}" style="width:100%; height:100%; object-fit:cover;">`;
+                document.getElementById('hint-modal').classList.add('active');
+            };
+
+            document.getElementById('start-quiz-btn').onclick = () => {
+                audio.playTap();
+                startQuiz();
+            };
+
+            // Initial render
+            renderHouseSelection();
+            updateGroupBadge();
+        };
+    </script>
+</body>
+</html>
